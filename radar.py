@@ -1,36 +1,23 @@
-"""
-Define el similador del Radar
-"""
+"""file: radar.py"""
+
 class Radar(object):
+    """Radar object. Pings medium and detects targets."""
 
+    def __init__(self, generator, detector):
+        """Radar constructor."""
 
-    def __init__(self, generador, detector):
-        self.generador = generador
+        self.generator = generator
         self.detector = detector
+        self.targets_found = []
 
+    def step(self, medium, time):
+        """Step in time."""
 
-    def detectar(self, medio, tiempo_inicial, tiempo_final):
+        signal = self.generator.emit(time)
 
-        """
-        Detecta si hay un blanco en un medio, en un intervalo de tiempo.
-        """
-        #Generar senal
-        una_senal = self.generador.generar(tiempo_inicial, tiempo_final)
-        #Retener una copia de la senal original
-        una_senal_original = una_senal[:]
+        self.targets_found = medium.ping(signal, time)
 
-        #Mandar senal al medio
-        una_senal_reflejada = medio.reflejar(una_senal, tiempo_inicial, \
-        tiempo_final)
+    def get_hits(self):
+        """Get the coordinates of the found targets."""
 
-        #
-        return self.detector.detectar(una_senal_original, una_senal_reflejada)
-
-    #TODO agregar el metodo plotear_senal
-    #Done
-    def plot(self, senal):
-        from matplotlib import pyplot as pp
-
-        pp.figure()
-        pp.scatter(range(len(senal)), senal)
-        pp.show()
+        return self.targets_found
