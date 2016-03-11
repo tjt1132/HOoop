@@ -1,62 +1,38 @@
-import radar
-import medio
-import blanco
-import generador
-import datetime
+"""file: new_main.py"""
+import random
+import target
+import medium
+import generator
 import detector
-
-
-# DISCLAMER!!
-# todo esta en castellano por razones didacticas
-# pero DEBEN programar en INGLES
-# uno nunca sabe quien puede leer su codigo
+import radar
+import screen
+import renderizer
 
 def main():
+    """Main function."""
 
-    # Intervalo de tiempo en el que vamos a medir
-    tiempo_inicial = datetime.datetime(2016, 3, 5, 1)
-    tiempo_final = datetime.datetime(2016, 3, 5, 10)
+    time_step = 0.25
+    sampling_rate = 0.01
 
-    import math
-    # parametros del generador de senales
-    amplitud = 0.2
-    fase = 0
-    frecuencia = math.pi / 8
+    trgts = []
 
-    #TODO construir un nuevo genrador de senales
-    #Done
-    un_generador = generador.Generador(amplitud, fase, frecuencia)
+    for i in range(10):
+        trgts.append(target.Target(random.random() * 30, random.random() * 0.5,
+                                   2, 0,
+                                   ([0, 100], [100, 0])))
 
-    #TODO construir un detector
-    #Done
-    un_detector = detector.Detector()
+    mdm = medium.Medium(trgts)
 
-    #TODO construir un nuevo radar
-    #Done
-    un_radar = radar.Radar(un_generador, un_detector)
+    #test_data = np.random.rand(2, 25)
 
-    # parametros para un blanco
-    amplitud_de_frecuencia_del_blanco = amplitud + 100
-    tiempo_inicial_del_blanco = datetime.datetime(2016, 3, 5, 2)
-    tiempo_final_del_blanco = datetime.datetime(2016, 3, 5, 4)
+    gen = generator.Generator(0.2, 0, 10, 0)
+    dec = detector.Detector()
+    rdr = radar.Radar(gen, dec)
+    scr = screen.Screen(rdr, mdm, 0)
 
-    #TODO contruir un nuevo blanco
-    un_blanco = blanco.Blanco(amplitud_de_frecuencia_del_blanco, \
-    tiempo_inicial_del_blanco, tiempo_final_del_blanco )
+    rndr = renderizer.Renderizer(scr)
 
-    #TODO contruir un medio
-    un_medio = medio.Medio(un_blanco)
-
-    #TODO construir un radar
-    un_radar = radar.Radar(un_generador, un_detector)
-
-    #detectar
-    detecto = un_radar.detectar(un_medio, tiempo_inicial, tiempo_final)
-
-    if detecto:
-        print "El radar detecto un blanco!"
-    else:
-        print "El rada no detecto nada!"
+    rndr.show()
 
 if __name__ == "__main__":
     main()
